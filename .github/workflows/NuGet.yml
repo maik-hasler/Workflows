@@ -1,0 +1,27 @@
+name: "Deploy to NuGet"
+
+on:
+  workflow_call:
+    inputs:
+      nuget-url:
+        required: true
+        type: string
+      nuget-api-key:
+        required: true
+        type: string
+      nuget-version:
+        required: true
+        type: string
+      nuget-path:
+        required: true
+        type: string
+
+jobs:
+  publish:
+    steps:
+      - name: Publish to NuGet feed
+        runs: |
+          dotnet nuget push ${{ inputs.nuget-path }} \
+          -s ${{ inputs.nuget-url }}
+          -k ${{ input.nuget-api-key }} \
+          /p:PackageVersion=${{ inputs.nuget-version }}

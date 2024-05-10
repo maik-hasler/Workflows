@@ -5,9 +5,6 @@ on:
     inputs:
       project-path:
         type: string
-      package-version:
-        required: true
-        type: string
       nuget-url:
         required: true
         type: string
@@ -22,6 +19,11 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
+
+      - name: Get package version
+        id: get-version
+        uses: maik-hasler/Workflows/.github/workflows/get-version.yml@main
+
       - name: Pack project
         run: |
           dotnet pack ${{ inputs.project-path }} \
@@ -30,11 +32,11 @@ jobs:
           --configuration Release \
           --include-symbols \
           --output ${{ env.PACKAGE_OUTPUT_PATH }}
-          -p:PackageVersion=${{ input.package-version }} \
+          -p:PackageVersion=${{ steps.get-version.outputs.version }} \
 
       - name: Publish to NuGet gallery
         runs: |
           dotnet nuget push ${{ env.PACKAGE_OUTPUT_PATH }}/*.nupkg \
           -s ${{ inputs.nuget-url }}
           -k ${{ input.nuget-api-key }} \
-          /p:PackageVersion=${{ inputs.nuget-version }}
+          /p:PackageVersion=${{ steps.get-version.outputs.version }}

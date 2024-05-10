@@ -1,0 +1,40 @@
+name: Publish
+
+on:
+  workflow_call:
+    inputs:
+      project-path:
+        type: string
+      package-version:
+        required: true
+        type: string
+      nuget-url:
+        required: true
+        type: string
+      nuget-api-key:
+        required: true
+        type: string
+
+env:
+  PACKAGE_OUTPUT_PATH: ${{ github.workspace }}/output
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pack project
+        run: |
+          dotnet pack ${{ inputs.project-path }} \
+          --no-restore \
+          --no-build \
+          --configuration Release \
+          --include-symbols \
+          --output ${{ env.PACKAGE_OUTPUT_PATH }}
+          -p:PackageVersion=${{ input.package-version }} \
+
+      - name: Publish to NuGet gallery
+        runs: |
+          dotnet nuget push ${{ env.PACKAGE_OUTPUT_PATH }}/*.nupkg \
+          -s ${{ inputs.nuget-url }}
+          -k ${{ input.nuget-api-key }} \
+          /p:PackageVersion=${{ inputs.nuget-version }}

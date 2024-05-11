@@ -8,9 +8,9 @@ on:
       nuget-url:
         required: true
         type: string
+    secrets:
       nuget-api-key:
         required: true
-        type: string
 
 env:
   PACKAGE_OUTPUT_PATH: ${{ github.workspace }}/output
@@ -38,5 +38,5 @@ jobs:
         run: |
           dotnet nuget push ${{ env.PACKAGE_OUTPUT_PATH }}/*.nupkg \
           -s ${{ inputs.nuget-url }}
-          -k ${{ input.nuget-api-key }} \
+          -k ${{ secrets.nuget-api-key }} \
           /p:PackageVersion=${{ steps.get-version.outputs.version }}

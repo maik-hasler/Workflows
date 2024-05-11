@@ -35,7 +35,7 @@ jobs:
           -p:PackageVersion=${{ steps.get-version.outputs.version }} \
 
       - name: Publish to NuGet gallery
-        runs: |
+        run: |
           dotnet nuget push ${{ env.PACKAGE_OUTPUT_PATH }}/*.nupkg \
           -s ${{ inputs.nuget-url }}
           -k ${{ input.nuget-api-key }} \

@@ -8,6 +8,9 @@ on:
       nuget-url:
         required: true
         type: string
+      dotnet-version:
+        required: true
+        type: string
     secrets:
       nuget-api-key:
         required: true
@@ -16,12 +19,16 @@ env:
   PACKAGE_OUTPUT_PATH: ${{ github.workspace }}/output
 
 jobs:
+
+  build:
+    uses: maik-hasler/workflows/.github/workflows/build.yml@main
+    with:
+      dotnet-version: ${{ inputs.dotnet-version }}
+      project-path: ${{ inputs.project-path }}
+      
   publish:
     runs-on: ubuntu-latest
     steps:
-
-      - name: Checkout codebase
-        uses: actions/checkout@v3
 
       - name: Get Version
         id: version

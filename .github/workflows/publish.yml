@@ -59,6 +59,7 @@ jobs:
       - name: Publish to NuGet gallery
         run: |
           dotnet nuget push ${{ env.PACKAGE_OUTPUT_PATH }}/*.nupkg \
-          -s ${{ inputs.nuget-url }} \
-          -k ${{ secrets.nuget-api-key }} \
+          --source ${{ inputs.nuget-url }} \
+          --api-key ${{ secrets.nuget-api-key }} \
+          --skip-duplicate \
           /p:PackageVersion=${{ steps.version.outputs.version-without-v }}

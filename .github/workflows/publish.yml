@@ -22,7 +22,7 @@ jobs:
 
       - name: Get package version
         id: get-version
-        uses: maik-hasler/workflows/.github/actions/get-version.yml@main
+        uses: ./.github/actions/get-version.yml@main
 
       - name: Pack project
         run: |

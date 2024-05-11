@@ -20,12 +20,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - name: Checkout codebase
-        uses: actions/checkout@v3
-
-      - name: Get package version
-        id: get-version
-        uses: maik-hasler/workflows/.github/actions/get-version.yml@main
+      - name: Get Version
+        id: version
+        uses: battila7/get-version-action@v2
 
       - name: Pack project
         run: |
@@ -35,11 +32,11 @@ jobs:
           --configuration Release \
           --include-symbols \
           --output ${{ env.PACKAGE_OUTPUT_PATH }}
-          -p:PackageVersion=${{ steps.get-version.outputs.version }} \
+          -p:PackageVersion=${{ steps.version.outputs.version-without-v }} \
 
       - name: Publish to NuGet gallery
         run: |
           dotnet nuget push ${{ env.PACKAGE_OUTPUT_PATH }}/*.nupkg \
           -s ${{ inputs.nuget-url }}
           -k ${{ secrets.nuget-api-key }} \
-          /p:PackageVersion=${{ steps.get-version.outputs.version }}
+          /p:PackageVersion=${{ steps.version.outputs.version-without-v }}

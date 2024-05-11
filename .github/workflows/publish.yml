@@ -53,12 +53,12 @@ jobs:
           --no-build \
           --configuration Release \
           --include-symbols \
-          --output ${{ env.PACKAGE_OUTPUT_PATH }}
-          -p:PackageVersion=${{ steps.version.outputs.version-without-v }} \
+          --output ${{ env.PACKAGE_OUTPUT_PATH }} \
+          -p:PackageVersion=${{ steps.version.outputs.version-without-v }}
 
       - name: Publish to NuGet gallery
         run: |
           dotnet nuget push ${{ env.PACKAGE_OUTPUT_PATH }}/*.nupkg \
-          -s ${{ inputs.nuget-url }}
+          -s ${{ inputs.nuget-url }} \
           -k ${{ secrets.nuget-api-key }} \
           /p:PackageVersion=${{ steps.version.outputs.version-without-v }}
